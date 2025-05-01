@@ -1,0 +1,42 @@
+
+
+
+.vbox-root {
+    -fx-background-color:white;
+    -fx-padding: 20px;
+}
+
+
+#clearButton {
+    -fx-background-color: #2D336B;
+    -fx-background-radius: 10px;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-cursor: pointer;
+    -fx-padding: 5px 20px;
+}
+
+
+#clearButton:hover {
+    -fx-background-color: #7886C7;
+}
+
+
+#typeguess{
+
+    -fx-font-size: 15px;
+    -fx-pref-width: 300px;
+}
+.submitbutton{
+    -fx-background-color: #2D336B;
+    -fx-background-radius: 10px;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-cursor: pointer;
+    -fx-padding: 5px 20px;
+}
+
+.submitbutton:hover{
+    -fx-background-color: #7886C7;
+}
+
