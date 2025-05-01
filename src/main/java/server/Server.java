@@ -1,15 +1,23 @@
 package server;
 
+import com.example.guessthedrawing2.Window;
+import javafx.scene.Scene;
+
 import java.io.*;
 import java.net.*;
 
 public class Server {
+
+
+
     Socket socket;
     InputStreamReader inputreader;
     OutputStreamWriter outputwriter;
     BufferedReader bufferedreader;
     BufferedWriter bufferedwriter;
     ServerSocket serversocket;
+
+
 
     public void runserver() throws IOException {
         serversocket=new ServerSocket(7777);
