@@ -40,3 +40,7 @@
     -fx-background-color: #7886C7;
 }
 
+#text{
+    -fx-font-size: 50px;
+
+}
