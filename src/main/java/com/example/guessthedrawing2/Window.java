@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class Window extends Application {
@@ -19,12 +20,12 @@ public class Window extends Application {
     private Stage primaryStage;
     private Server server;
     private Client client;
-
+    Scene scene1;
 
     public void start(Stage stage) {
         primaryStage=new Stage();
-         server = new Server( primaryStage);
-        client = new Client( primaryStage);
+         server = new Server( primaryStage,scene1);
+        client = new Client( primaryStage,scene1);
 
 
 
@@ -61,8 +62,8 @@ public class Window extends Application {
 
 
 
-        Scene scene1 = new Scene(Vbox,800,600);
-        scene1.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
+         scene1 = new Scene(Vbox,800,600);
+        scene1.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app.css")).toExternalForm());
 
         primaryStage.setTitle("GUESS THE DRAWING");
         primaryStage.setScene(scene1);
