@@ -101,11 +101,14 @@ public class Server {
         returnhome = new Button("Return Home");
         returnhome.getStyleClass().add("submitbutton");
         returnhome.setOnAction(event -> {
-            stage.setScene(homscean);
+            Platform.runLater(() -> {stage.setScene(homscean);});
+
         });
         scenefinal = new Scene(vboxend, 800, 600);
+        scenefinal.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app.css")).toExternalForm());
 
-
+        Text P1=new Text("P1(you):"+player1point);
+        Text P2=new Text("P2:"+player2point);
 
         HBox hbox = new HBox(100);
         hbox.getChildren().addAll(timerLabel);
@@ -159,11 +162,22 @@ public class Server {
                     e.printStackTrace();
                 }
                     while (true){
+                            if (!hbox3.getChildren().contains(P1) && !hbox3.getChildren().contains(P2)) {
+                                Platform.runLater(() -> {
+                                    hbox3.getChildren().addAll(P1, P2);
+
+                                });
+                            }
+                        Platform.runLater(() -> {
+                            P1.setText("P1(you):"+player1point);
+                            P2.setText("P2:"+player2point);
+
+                        });
                         randomtopic=getrandomWord();
                         try {
 
 
-                    if (isdrawing==false) {
+                     if (isdrawing==false) {
 
                         Platform.runLater(() -> {
                             canvas.setOnMousePressed(null);
@@ -186,14 +200,15 @@ public class Server {
                                 Platform.runLater(() -> {
                                     guess = textField.getText();
                                     textField.setText("");
+                                    try {
+                                        bufferedwriter.write("Guess:" + guess);
+                                        bufferedwriter.newLine();
+                                        bufferedwriter.flush();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
-                                try {
-                                    bufferedwriter.write("Guess:" + guess);
-                                    bufferedwriter.newLine();
-                                    bufferedwriter.flush();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+
 
 
                             });
@@ -208,45 +223,41 @@ public class Server {
                             if (isroundend==true){
                                 if (isdrawing==false) {
                                     randomtopic=getrandomWord();
-                                    if ((curentround + 1) < Rondes) {
-                                        curentround++;
-                                        if (player2point >= pointtowin|| player2point+1>=pointtowin) {
+                                    curentround++;
+                                    player2point++;
+                                    if (curentround <= Rondes) {
+
+                                        if (player2point>=pointtowin) {
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(p2win,returnhome);
                                                 stage.setScene(scenefinal);
 
                                             });
 
-                                        } else {
-                                            player2point++;
                                         }
+
                                     } else {
-
-                                    }
-
-
-                                }else{
-                                    if ((curentround + 1) < Rondes) {
-                                        curentround++;
-                                        if (player1point >= pointtowin || player1point+1>=pointtowin) {
+                                        if (player2point>player1point){
+                                            Platform.runLater(() -> {
+                                                vboxend.getChildren().addAll(p2win,returnhome);
+                                                stage.setScene(scenefinal);
+                                            });
+                                            break;
+                                        }else if (player2point==player1point){
+                                            Platform.runLater(() -> {
+                                                vboxend.getChildren().addAll(draw,returnhome);
+                                                stage.setScene(scenefinal);
+                                            });
+                                            break;
+                                        }else if (player1point>player2point){
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(p1win,returnhome);
                                                 stage.setScene(scenefinal);
-
                                             });
-
-                                        } else {
-                                            player1point++;
+                                            break;
                                         }
-                                    } else {
-                                        Platform.runLater(() -> {
-                                            vboxend.getChildren().addAll(draw,returnhome);
-                                            stage.setScene(scenefinal);
 
-                                        });
                                     }
-
-
 
 
                                 }
@@ -262,8 +273,10 @@ public class Server {
                             if (data.equals("truegeuss")) {
                                 resetTimer();
                                 isdrawing=!isdrawing;
-                                if ((curentround + 1) < Rondes) {
-                                    curentround++;
+                                curentround++;
+                                player1point++;
+                                if ((curentround) <= Rondes) {
+
                                     if (player1point >= pointtowin) {
                                         Platform.runLater(() -> {
                                             vboxend.getChildren().addAll(p1win, returnhome);
@@ -271,16 +284,27 @@ public class Server {
 
                                         });
                                         break;
-                                    } else {
-                                        player1point++;
-                                        break;
                                     }
+                                    break;
                                 } else {
-                                    Platform.runLater(() -> {
-                                        vboxend.getChildren().addAll(draw, returnhome);
-                                        stage.setScene(scenefinal);
-
-                                    });
+                                    if (player2point>player1point){
+                                        Platform.runLater(() -> {
+                                            vboxend.getChildren().addAll(p2win,returnhome);
+                                            stage.setScene(scenefinal);
+                                        });
+                                        break;
+                                    }else if (player2point==player1point){
+                                        Platform.runLater(() -> {
+                                            vboxend.getChildren().addAll(draw,returnhome);
+                                            stage.setScene(scenefinal);
+                                        });
+                                        break;
+                                    }else if (player1point>player2point){
+                                        Platform.runLater(() -> {
+                                            vboxend.getChildren().addAll(p1win,returnhome);
+                                            stage.setScene(scenefinal);
+                                        });
+                                    }
                                     break;
                                 }
 
@@ -325,13 +349,7 @@ public class Server {
                             clearButton = new Button("Clear");
                             clearButton.setId("clearButton");
                             label = new Label("THE TOPIC:" + randomtopic);
-                            try {
-                                bufferedwriter.write("  ");
-                                bufferedwriter.newLine();
-                                bufferedwriter.flush();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+
                             clearButton.setOnAction(e -> {
                                 graph.clearRect(0, 0, 500, 400);
                                 sendClearCommand();
@@ -340,7 +358,13 @@ public class Server {
                                 hbox.getChildren().addAll(label, clearButton);
 
                             }
-
+                            try {
+                                bufferedwriter.write("  ");
+                                bufferedwriter.newLine();
+                                bufferedwriter.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
                             canvas.setOnMousePressed(this::handleMousePressed);
                             canvas.setOnMouseDragged(this::handleMouseDragged);
@@ -351,55 +375,49 @@ public class Server {
                             try {
                                 String data1;
                                while ((data1 = bufferedreader.readLine()) != null) {
-                                   if (isroundend==true){
-                                       if (isdrawing==false) {
-                                           randomtopic=getrandomWord();
-                                           if ((curentround + 1) < Rondes) {
-                                               curentround++;
-                                               if (player2point >= pointtowin|| player2point+1>=pointtowin) {
+                                   if (isroundend == true) {
+
+                                           randomtopic = getrandomWord();
+                                           curentround++;
+                                           player1point++;
+                                           if (curentround <=Rondes) {
+
+                                               if (player1point >= pointtowin) {
                                                    Platform.runLater(() -> {
-                                                       vboxend.getChildren().addAll(p2win,returnhome);
+                                                       vboxend.getChildren().addAll(p1win, returnhome);
                                                        stage.setScene(scenefinal);
 
                                                    });
 
-                                               } else {
-                                                   player2point++;
                                                }
+
                                            } else {
-
-                                           }
-
-
-                                       }else{
-                                           if ((curentround + 1) < Rondes) {
-                                               curentround++;
-                                               if (player1point >= pointtowin || player1point+1>=pointtowin) {
+                                               if (player2point > player1point) {
                                                    Platform.runLater(() -> {
-                                                       vboxend.getChildren().addAll(p1win,returnhome);
+                                                       vboxend.getChildren().addAll(p2win, returnhome);
                                                        stage.setScene(scenefinal);
-
                                                    });
-
-                                               } else {
-                                                   player1point++;
+                                                   break;
+                                               } else if (player2point == player1point) {
+                                                   Platform.runLater(() -> {
+                                                       vboxend.getChildren().addAll(draw, returnhome);
+                                                       stage.setScene(scenefinal);
+                                                   });
+                                                   break;
+                                               } else if (player1point > player2point) {
+                                                   Platform.runLater(() -> {
+                                                       vboxend.getChildren().addAll(p1win, returnhome);
+                                                       stage.setScene(scenefinal);
+                                                   });
                                                }
-                                           } else {
-                                               Platform.runLater(() -> {
-                                                   vboxend.getChildren().addAll(draw,returnhome);
-                                                   stage.setScene(scenefinal);
-
-                                               });
-                                           }
-
-
-
+                                               break;
 
                                        }
+                                       isdrawing = !isdrawing;
+                                       isroundend = !isroundend;
+                                       break;
 
-                                       isdrawing=!isdrawing;
-                                       isroundend=!isroundend;
-                                       break;}
+                                   }
                                     if (data1.startsWith("Guess:")) {
 
                                         String[] parts = data1.split(":", 2);
@@ -411,8 +429,9 @@ public class Server {
                                             bufferedwriter.flush();
                                             isdrawing = !isdrawing;
                                             resetTimer();
-                                            if ((curentround + 1) < Rondes) {
-                                                curentround++;
+                                            curentround++;
+                                            player2point++;
+                                            if (curentround <= Rondes) {
                                                 if (player2point >= pointtowin) {
                                                     Platform.runLater(() -> {
                                                         vboxend.getChildren().addAll(p2win, returnhome);
@@ -420,18 +439,30 @@ public class Server {
 
                                                     });
                                                     break;
-                                                } else {
-                                                    player2point++;
-                                                    break;
                                                 }
-                                            } else {
-                                                Platform.runLater(() -> {
-                                                    vboxend.getChildren().addAll(draw, returnhome);
-                                                    stage.setScene(scenefinal);
 
-                                                });
+                                            } else {
+                                                if (player2point > player1point) {
+                                                    Platform.runLater(() -> {
+                                                        vboxend.getChildren().addAll(p2win, returnhome);
+                                                        stage.setScene(scenefinal);
+                                                    });
+                                                    break;
+                                                } else if (player2point == player1point) {
+                                                    Platform.runLater(() -> {
+                                                        vboxend.getChildren().addAll(draw, returnhome);
+                                                        stage.setScene(scenefinal);
+                                                    });
+                                                    break;
+                                                } else if (player1point > player2point) {
+                                                    Platform.runLater(() -> {
+                                                        vboxend.getChildren().addAll(p1win, returnhome);
+                                                        stage.setScene(scenefinal);
+                                                    });
+                                                }
+                                                break;
                                             }
-                                            ;
+
 
 
                                             break;
