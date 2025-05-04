@@ -312,10 +312,11 @@ public class Server {
                             }
 
                             String[] parts = data.split(":");
+
                             if (parts.length == 3) {
                                 String action = parts[0];
-                                double x = Double.parseDouble(parts[1]);
-                                double y = Double.parseDouble(parts[2]);
+                                double x = Double.parseDouble(parts[1].replace(",", "."));
+                                double y = Double.parseDouble(parts[2].replace(",", "."));
 
                                 Platform.runLater(() -> {
                                     switch (action) {
@@ -516,7 +517,8 @@ public class Server {
     private void resetTimer() {
         stopTimer();
         timeRemaining = 60;
-        timerLabel.setText("Time Remaining: " + timeRemaining + " seconds");
+        Platform.runLater(() -> {timerLabel.setText("Time Remaining: " + timeRemaining + " seconds");});
+
 
 
         timeline.getKeyFrames().clear();

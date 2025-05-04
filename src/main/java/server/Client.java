@@ -323,12 +323,15 @@ public class Client {
                             }
 
                             String[] parts = data.split(":");
+
                             if (parts.length == 3) {
                                 String action = parts[0];
-                                double x = Double.parseDouble(parts[1]);
-                                double y = Double.parseDouble(parts[2]);
+                                double x = Double.parseDouble(parts[1].replace(",", "."));
+                                double y = Double.parseDouble(parts[2].replace(",", "."));
+                            
 
-                                Platform.runLater(() -> {
+
+                            Platform.runLater(() -> {
                                     switch (action) {
                                         case "START":
                                             graph.beginPath();
