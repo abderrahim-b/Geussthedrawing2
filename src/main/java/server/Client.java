@@ -60,6 +60,7 @@ public class Client {
     boolean isroundend=false;
    public Stage stage;
     boolean isdrawing = false;
+    boolean gameend=false;
     public Client( Stage stage ,Scene homescene) {
         this.homscean=homescene;
         this.stage = stage;
@@ -95,7 +96,8 @@ public class Client {
         returnhome = new Button("Return Home");
         returnhome.getStyleClass().add("submitbutton");
         returnhome.setOnAction(event -> {
-            stage.setScene(homscean);
+            Platform.runLater(() -> {stage.setScene(homscean);});
+
         });
         scenefinal = new Scene(vboxend, 800, 600);
         scenefinal.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app.css")).toExternalForm());
@@ -171,6 +173,7 @@ public class Client {
                 e.printStackTrace();
             }
             while (true){
+                Platform.runLater(() -> graph.clearRect(0, 0, 500, 400));
                 if (!hbox3.getChildren().contains(P1) && !hbox3.getChildren().contains(P2)) {
                     Platform.runLater(() -> {
                         hbox3.getChildren().addAll(P1,P2);
@@ -242,6 +245,7 @@ public class Client {
                                     if (curentround <= Rondes) {
 
                                         if (player1point>=pointtowin) {
+                                            gameend=true;
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(p2win,returnhome);
                                                 stage.setScene(scenefinal);
@@ -252,16 +256,19 @@ public class Client {
 
                                     } else {
                                         if (player2point>player1point){
+                                            gameend=true;
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(p2win,returnhome);
                                                 stage.setScene(scenefinal);
                                             });
                                         }else if (player2point==player1point){
+                                            gameend=true;
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(draw,returnhome);
                                                 stage.setScene(scenefinal);
                                             });
                                         }else if (player1point>player2point){
+                                            gameend=true;
                                             Platform.runLater(() -> {
                                                 vboxend.getChildren().addAll(p1win,returnhome);
                                                 stage.setScene(scenefinal);
@@ -289,6 +296,7 @@ public class Client {
                                 if ((curentround) <= Rondes) {
 
                                     if (player2point >= pointtowin) {
+                                        gameend=true;
                                         Platform.runLater(() -> {
                                             vboxend.getChildren().addAll(p2win, returnhome);
                                             stage.setScene(scenefinal);
@@ -299,18 +307,21 @@ public class Client {
                                     break;
                                 } else {
                                     if (player2point>player1point){
+                                        gameend=true;
                                         Platform.runLater(() -> {
                                             vboxend.getChildren().addAll(p2win,returnhome);
                                             stage.setScene(scenefinal);
                                         });
                                         break;
                                     }else if (player2point==player1point){
+                                        gameend=true;
                                         Platform.runLater(() -> {
                                             vboxend.getChildren().addAll(draw,returnhome);
                                             stage.setScene(scenefinal);
                                         });
                                         break;
                                     }else if (player1point>player2point){
+                                        gameend=true;
                                         Platform.runLater(() -> {
                                             vboxend.getChildren().addAll(p1win,returnhome);
                                             stage.setScene(scenefinal);
@@ -397,6 +408,7 @@ public class Client {
                                         if (curentround <= Rondes) {
 
                                             if (player2point >= pointtowin) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p2win, returnhome);
                                                     stage.setScene(scenefinal);
@@ -407,18 +419,21 @@ public class Client {
 
                                         } else {
                                             if (player2point > player1point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p2win, returnhome);
                                                     stage.setScene(scenefinal);
                                                 });
                                                 break;
                                             } else if (player2point == player1point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(draw, returnhome);
                                                     stage.setScene(scenefinal);
                                                 });
                                                 break;
                                             } else if (player1point > player2point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p1win, returnhome);
                                                     stage.setScene(scenefinal);
@@ -450,6 +465,7 @@ public class Client {
                                         if (curentround <= Rondes) {
 
                                             if (player1point >= pointtowin) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p1win, returnhome);
                                                     stage.setScene(scenefinal);
@@ -460,18 +476,21 @@ public class Client {
 
                                         } else {
                                             if (player2point > player1point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p2win, returnhome);
                                                     stage.setScene(scenefinal);
                                                 });
                                                 break;
                                             } else if (player2point == player1point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(draw, returnhome);
                                                     stage.setScene(scenefinal);
                                                 });
                                                 break;
                                             } else if (player1point > player2point) {
+                                                gameend=true;
                                                 Platform.runLater(() -> {
                                                     vboxend.getChildren().addAll(p1win, returnhome);
                                                     stage.setScene(scenefinal);
@@ -508,6 +527,23 @@ public class Client {
 //                    System.err.println("Failed to close resources: " + e.getMessage());
 //                }
 //            }
+                if (gameend==true){
+                    try {
+                        if (bufferedreader != null) {
+                            bufferedreader.close();
+                        }
+                        if (bufferedwriter != null) {
+                            bufferedwriter.close();
+                        }
+                        if (socket != null && !socket.isClosed()) {
+                            socket.close();
+                        }
+
+                    } catch (IOException e) {
+                        System.err.println("Error while closing client connection: " + e.getMessage());
+                    }
+                    break;
+                }
             }
         }).start();
     }
